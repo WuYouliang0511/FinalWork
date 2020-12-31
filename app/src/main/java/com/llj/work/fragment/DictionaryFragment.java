@@ -3,12 +3,17 @@ package com.llj.work.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +38,8 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
     private static final String TAG = "DictionaryFragment";
     private RecyclerView vocabularyList;
     private SmartRefreshLayout refreshLayout;
+    private EditText search;
+    private ArrayList<Vocabulary> vocabularies;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -51,7 +58,9 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
         View view = inflater.inflate(R.layout.fragment_dictionary, container, true);
         vocabularyList = view.findViewById(R.id.vocabulary_list);
         //设置适配器
-        VocabularyListAdapter adapter = new VocabularyListAdapter(getContext(), getAllVocabulary());
+        vocabularies = new ArrayList<>();
+        vocabularies.addAll(getAllVocabulary());
+        VocabularyListAdapter adapter = new VocabularyListAdapter(getContext(), vocabularies);
         adapter.setOnVocabularyOperationListener(this);
         vocabularyList.setAdapter(adapter);
         //添加item的分割线
@@ -61,14 +70,55 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
         refreshLayout = view.findViewById(R.id.refresher);
         refreshLayout.setEnableRefresh(true);//是否可下拉刷新
         refreshLayout.setOnRefreshListener(refreshLayout -> {//下拉刷新监听
-            adapter.resetData(getAllVocabulary());
+            vocabularies = getAllVocabulary();
+            adapter.resetData(vocabularies);
+            Log.d(TAG, "" + adapter.getItemCount());
             refreshLayout.finishRefresh(500);
         });
 
         refreshLayout.setEnableLoadMore(true);//是否可以下拉加载更多
         refreshLayout.setOnLoadMoreListener(refreshLayout -> {//下拉加载更多监听
-            adapter.addData(getAllVocabulary());
+            vocabularies.addAll(getAllVocabulary());
+            adapter.resetData(vocabularies);
+            Log.d(TAG, "" + adapter.getItemCount());
             refreshLayout.finishLoadMore(500);
+        });
+
+        search = view.findViewById(R.id.search);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //根据编辑框的内容，进行模糊查找（单词中含有该子串）
+                String fuzzyStr = editable.toString().toLowerCase();
+                Log.d(TAG, editable.toString());
+                if (TextUtils.isEmpty(fuzzyStr)) {
+                    adapter.fuzzySearch(vocabularies, null);
+                    refreshLayout.setEnableLoadMore(true);
+                    refreshLayout.setEnableRefresh(true);
+                } else {
+                    refreshLayout.setEnableLoadMore(false);
+                    refreshLayout.setEnableRefresh(false);
+                    ArrayList<Vocabulary> fuzzyVocabularies = new ArrayList<>();
+                    for (Vocabulary vocabulary : vocabularies) {
+                        if (vocabulary.getLemma().toLowerCase().contains(fuzzyStr)) {
+                            fuzzyVocabularies.add(vocabulary);
+                            Log.d(TAG, "单词: " + vocabulary.getLemma());
+                        }
+                    }
+                    adapter.fuzzySearch(fuzzyVocabularies, fuzzyStr);
+                    Log.d(TAG, "" + adapter.getItemCount());
+                }
+            }
         });
         return view;
     }

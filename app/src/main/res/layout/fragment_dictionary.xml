@@ -32,7 +32,7 @@
                 android:padding="5dp"
                 tools:ignore="ContentDescription" />
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            <EditText
                 android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
@@ -45,7 +45,6 @@
                 android:singleLine="true"
                 android:textColorHint="#cdcdcd"
                 android:textSize="15sp"
-
                 tools:ignore="Autofill,LabelFor" />
         </LinearLayout>
 
@@ -62,6 +61,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_layout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </com.scwang.smartrefresh.layout.SmartRefreshLayout>

@@ -64,7 +64,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         database.execSQL(sql);
         Log.d(TAG, "数据库创建成功");
 
-        String sql1 = "INSERT INTO vocabulary VALUES(NULL,'Success','音节111','解释111','发音111',1,0,1)";
+        String sql1 = "INSERT INTO vocabulary VALUES(NULL,'Success1','音节111','解释111','发音111',1,0,1)";
         database.execSQL(sql1);
         Log.d(TAG, "插入数据成功");
 
@@ -72,11 +72,11 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         database.execSQL(sql2);
         Log.d(TAG, "插入数据成功");
 
-        String sql3 = "INSERT INTO vocabulary VALUES(NULL,'Success','音节333','解释333','发音333',2,0,1)";
+        String sql3 = "INSERT INTO vocabulary VALUES(NULL,'Success2','音节333','解释333','发音333',2,0,1)";
         database.execSQL(sql3);
         Log.d(TAG, "插入数据成功");
 
-        String sql4 = "INSERT INTO vocabulary VALUES(NULL,'Success','音节444','解释444','发音444',6,1,0)";
+        String sql4 = "INSERT INTO vocabulary VALUES(NULL,'Success3','音节444','解释444','发音444',6,1,0)";
         database.execSQL(sql4);
         Log.d(TAG, "插入数据成功");
     }

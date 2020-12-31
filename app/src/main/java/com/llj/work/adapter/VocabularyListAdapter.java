@@ -2,6 +2,12 @@ package com.llj.work.adapter;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.BackgroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +20,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.llj.work.R;
 import com.llj.work.bean.Vocabulary;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAdapter.VocabularyListViewHolder> {
 
+    private static final String TAG = "VocabularyListAdapter";
     private final Context context;
     private ArrayList<Vocabulary> vocabularies;
     private OnVocabularyOperationListener listener;
+    private String fuzzyStr;
 
     public VocabularyListAdapter(Context context, ArrayList<Vocabulary> vocabularies) {
         this.context = context;
@@ -39,7 +49,7 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
         Vocabulary vocabulary = vocabularies.get(position);
 
         if (vocabulary != null) {
-            holder.lemma.setText(vocabulary.getLemma());
+
             holder.phonetic.setText(vocabulary.getPhonetic());
             holder.senses_senior.setText(vocabulary.getSenses_senior());
             holder.collect.setChecked(vocabulary.getCollect() == 1);
@@ -48,6 +58,20 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
                     listener.onCollect(vocabulary.getId(), isChecked);
                 }
             });
+
+            if (TextUtils.isEmpty(fuzzyStr)) {
+                holder.collect.setVisibility(View.VISIBLE);
+                holder.lemma.setText(vocabulary.getLemma());
+            } else {
+                String lemmaInLowerCase = vocabulary.getLemma().toLowerCase();
+                holder.collect.setVisibility(View.GONE);
+
+                int[] index = findIndex(lemmaInLowerCase, fuzzyStr);
+                SpannableString ss = new SpannableString(vocabulary.getLemma());
+                ss.setSpan(new BackgroundColorSpan(Color.YELLOW), index[0], index[1], 33);
+                holder.lemma.setText(ss);
+                holder.lemma.setMovementMethod(LinkMovementMethod.getInstance());
+            }
         }
     }
 
@@ -58,6 +82,18 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
 
     public void addData(ArrayList<Vocabulary> vocabularies) {
         this.vocabularies.addAll(vocabularies);
+        notifyDataSetChanged();//通知列表更新
+    }
+
+    /**
+     * 根据字符串进行模糊查找,详见DictionaryFragment{afterTextChanged}
+     *
+     * @param fuzzyStr 模糊字串
+     */
+    public void fuzzySearch(ArrayList<Vocabulary> vocabularies, String fuzzyStr) {
+        this.vocabularies = vocabularies;
+        this.fuzzyStr = fuzzyStr;
+        Log.d(TAG, "fuzzyStr: " + this.fuzzyStr);
         notifyDataSetChanged();//通知列表更新
     }
 
@@ -88,5 +124,22 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
 
     public void setOnVocabularyOperationListener(OnVocabularyOperationListener listener) {
         this.listener = listener;
+    }
+
+    @NotNull
+    private int[] findIndex(@NotNull String str1, @NotNull String str2) {
+        int length1 = str1.length();
+        int length2 = str2.length();
+        int[] index = new int[]{0, 0};
+
+        for (int i = 0; i < length1 - length2 + 1; i++) {
+            if (str1.substring(i, i + length2).equals(str2)) {
+                Log.d(TAG, "startIndex: " + i + "   endIndex: " + (i + length2));
+                index[0] = i;
+                index[1] = i + length2;
+                break;
+            }
+        }
+        return index;
     }
 }
