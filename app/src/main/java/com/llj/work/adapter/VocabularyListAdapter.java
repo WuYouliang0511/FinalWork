@@ -60,12 +60,11 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
             });
 
             if (TextUtils.isEmpty(fuzzyStr)) {
-                holder.collect.setVisibility(View.VISIBLE);
+//                holder.collect.setVisibility(View.VISIBLE);
                 holder.lemma.setText(vocabulary.getLemma());
             } else {
                 String lemmaInLowerCase = vocabulary.getLemma().toLowerCase();
-                holder.collect.setVisibility(View.GONE);
-
+//                holder.collect.setVisibility(View.GONE);
                 int[] index = findIndex(lemmaInLowerCase, fuzzyStr);
                 SpannableString ss = new SpannableString(vocabulary.getLemma());
                 ss.setSpan(new BackgroundColorSpan(Color.YELLOW), index[0], index[1], 33);

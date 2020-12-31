@@ -112,7 +112,7 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
                     for (Vocabulary vocabulary : vocabularies) {
                         if (vocabulary.getLemma().toLowerCase().contains(fuzzyStr)) {
                             fuzzyVocabularies.add(vocabulary);
-                            Log.d(TAG, "单词: " + vocabulary.getLemma());
+                            Log.d(TAG, "单词: " + vocabulary.getLemma() + "   " + vocabulary.getSenses_senior());
                         }
                     }
                     adapter.fuzzySearch(fuzzyVocabularies, fuzzyStr);
@@ -203,11 +203,11 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
 
     @Override
     public void onCollect(Integer id, boolean collected) {
-//        if (collected) {
-//            Toast.makeText(getContext(), id + "收藏", Toast.LENGTH_LONG).show();
-//        } else {
-//            Toast.makeText(getContext(), id + "取消收藏", Toast.LENGTH_LONG).show();
-//        }
+        if (collected) {
+            Log.d(TAG, id + "收藏");
+        } else {
+            Log.d(TAG, id + "取消收藏");
+        }
         VocabularyFactory.getInstance(getContext()).doCollectOperation(id, collected);
     }
 }

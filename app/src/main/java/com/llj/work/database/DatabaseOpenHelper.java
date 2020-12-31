@@ -68,17 +68,17 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         database.execSQL(sql1);
         Log.d(TAG, "插入数据成功");
 
-        String sql2 = "INSERT INTO vocabulary VALUES(NULL,'Failure','音节222','解释222','发音222',3,1,0)";
-        database.execSQL(sql2);
-        Log.d(TAG, "插入数据成功");
-
-        String sql3 = "INSERT INTO vocabulary VALUES(NULL,'Success2','音节333','解释333','发音333',2,0,1)";
-        database.execSQL(sql3);
-        Log.d(TAG, "插入数据成功");
-
-        String sql4 = "INSERT INTO vocabulary VALUES(NULL,'Success3','音节444','解释444','发音444',6,1,0)";
-        database.execSQL(sql4);
-        Log.d(TAG, "插入数据成功");
+//        String sql2 = "INSERT INTO vocabulary VALUES(NULL,'Failure','音节222','解释222','发音222',3,1,0)";
+//        database.execSQL(sql2);
+//        Log.d(TAG, "插入数据成功");
+//
+//        String sql3 = "INSERT INTO vocabulary VALUES(NULL,'Success2','音节333','解释333','发音333',2,0,1)";
+//        database.execSQL(sql3);
+//        Log.d(TAG, "插入数据成功");
+//
+//        String sql4 = "INSERT INTO vocabulary VALUES(NULL,'Success3','音节444','解释444','发音444',6,1,0)";
+//        database.execSQL(sql4);
+//        Log.d(TAG, "插入数据成功");
     }
 
     private void updateFrom1To2(@NotNull SQLiteDatabase database) {
