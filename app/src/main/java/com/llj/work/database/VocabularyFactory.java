@@ -18,6 +18,7 @@ public class VocabularyFactory {
     private static SQLiteDatabase database;
     private static volatile VocabularyFactory instance;
     private final Context context;
+    private static final int PAGE_LIMIT = 5;
 
     public static VocabularyFactory getInstance(Context context) {
         if (instance == null) {
@@ -47,9 +48,45 @@ public class VocabularyFactory {
         return database.getVersion();
     }
 
+    /**
+     * @return 获取所有的单词
+     */
     public ArrayList<Vocabulary> getAllVocabulary() {
         ArrayList<Vocabulary> vocabularies = new ArrayList<>();
         String sql = "SELECT * FROM vocabulary";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String lemma = cursor.getString(1);
+            String lemma_mark = cursor.getString(2);
+            String senses_senior = cursor.getString(3);
+            String phonetic = cursor.getString(4);
+            int degree = cursor.getInt(5);
+            int collect = cursor.getInt(6);
+            int have_audio = cursor.getInt(7);
+            Vocabulary vocabulary = new Vocabulary();
+            vocabulary.setId(id);
+            vocabulary.setLemma(lemma);
+            vocabulary.setLemma_mark(lemma_mark);
+            vocabulary.setSenses_senior(senses_senior);
+            vocabulary.setPhonetic(phonetic);
+            vocabulary.setDegree(degree);
+            vocabulary.setCollect(collect);
+            vocabulary.setHave_audio(have_audio);
+            Log.d(TAG, vocabulary.toString());
+            vocabularies.add(vocabulary);
+        }
+        cursor.close();
+        return vocabularies;
+    }
+
+    /**
+     * @return 获取一页单词 个数为PAGE_LIMIT
+     */
+    public ArrayList<Vocabulary> getOnePage(int page) {
+        int index = PAGE_LIMIT * page;
+        ArrayList<Vocabulary> vocabularies = new ArrayList<>();
+        String sql = "select * from vocabulary order by id limit " + PAGE_LIMIT + " offset " + index;
         Cursor cursor = database.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             int id = cursor.getInt(0);

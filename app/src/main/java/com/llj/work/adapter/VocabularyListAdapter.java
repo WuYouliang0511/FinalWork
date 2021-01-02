@@ -2,6 +2,7 @@ package com.llj.work.adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -11,13 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.llj.work.R;
+import com.llj.work.activity.DetailActivity;
 import com.llj.work.bean.Vocabulary;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,25 +54,31 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
 
             holder.phonetic.setText(vocabulary.getPhonetic());
             holder.senses_senior.setText(vocabulary.getSenses_senior());
-            holder.collect.setChecked(vocabulary.getCollect() == 1);
-            holder.collect.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            holder.collect.setImageResource(vocabulary.getCollect() == 1 ? R.drawable.selected : R.drawable.unselected);
+            holder.collect.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onCollect(vocabulary.getId(), isChecked);
+                    vocabulary.setCollect(vocabulary.getCollect() == 1 ? 0 : 1);
+                    listener.onCollect(vocabulary.getId(), vocabulary.getCollect() == 1);
+                    notifyDataSetChanged();
                 }
             });
 
             if (TextUtils.isEmpty(fuzzyStr)) {
-//                holder.collect.setVisibility(View.VISIBLE);
                 holder.lemma.setText(vocabulary.getLemma());
             } else {
                 String lemmaInLowerCase = vocabulary.getLemma().toLowerCase();
-//                holder.collect.setVisibility(View.GONE);
                 int[] index = findIndex(lemmaInLowerCase, fuzzyStr);
                 SpannableString ss = new SpannableString(vocabulary.getLemma());
                 ss.setSpan(new BackgroundColorSpan(Color.YELLOW), index[0], index[1], 33);
                 holder.lemma.setText(ss);
                 holder.lemma.setMovementMethod(LinkMovementMethod.getInstance());
             }
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent();
+                intent.setClass(context, DetailActivity.class);
+                intent.putExtra("vocabulary", vocabulary);
+                context.startActivity(intent);
+            });
         }
     }
 
@@ -106,7 +114,7 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
         public TextView lemma;
         public TextView phonetic;
         public TextView senses_senior;
-        public CheckBox collect;
+        public ImageView collect;
 
         public VocabularyListViewHolder(@NonNull View view) {
             super(view);
@@ -140,5 +148,9 @@ public class VocabularyListAdapter extends RecyclerView.Adapter<VocabularyListAd
             }
         }
         return index;
+    }
+
+    public void order() {
+
     }
 }

@@ -70,11 +70,15 @@
             tools:ignore="HardcodedText" />
     </RelativeLayout>
 
-    <CheckBox
+    <ImageView
         android:id="@+id/collect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:gravity="center" />
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/selected"
+        android:gravity="center"
+        android:padding="3dp"
+        tools:ignore="ContentDescription" />
 </RelativeLayout>

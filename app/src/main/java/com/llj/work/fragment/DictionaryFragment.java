@@ -40,6 +40,8 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
     private SmartRefreshLayout refreshLayout;
     private EditText search;
     private ArrayList<Vocabulary> vocabularies;
+    private int page;
+    private VocabularyListAdapter adapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -59,8 +61,8 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
         vocabularyList = view.findViewById(R.id.vocabulary_list);
         //设置适配器
         vocabularies = new ArrayList<>();
-        vocabularies.addAll(getAllVocabulary());
-        VocabularyListAdapter adapter = new VocabularyListAdapter(getContext(), vocabularies);
+        vocabularies.addAll(getOnePage());
+        adapter = new VocabularyListAdapter(getContext(), vocabularies);
         adapter.setOnVocabularyOperationListener(this);
         vocabularyList.setAdapter(adapter);
         //添加item的分割线
@@ -70,7 +72,8 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
         refreshLayout = view.findViewById(R.id.refresher);
         refreshLayout.setEnableRefresh(true);//是否可下拉刷新
         refreshLayout.setOnRefreshListener(refreshLayout -> {//下拉刷新监听
-            vocabularies = getAllVocabulary();
+            page = 0;
+            vocabularies = getOnePage();
             adapter.resetData(vocabularies);
             Log.d(TAG, "" + adapter.getItemCount());
             refreshLayout.finishRefresh(500);
@@ -78,7 +81,7 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
 
         refreshLayout.setEnableLoadMore(true);//是否可以下拉加载更多
         refreshLayout.setOnLoadMoreListener(refreshLayout -> {//下拉加载更多监听
-            vocabularies.addAll(getAllVocabulary());
+            vocabularies.addAll(getOnePage());
             adapter.resetData(vocabularies);
             Log.d(TAG, "" + adapter.getItemCount());
             refreshLayout.finishLoadMore(500);
@@ -187,9 +190,13 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
         switch (item.getItemId()) {
             case R.id.sort://点击排序
                 Toast.makeText(getContext(), "排序", Toast.LENGTH_LONG).show();
+                adapter.order();
                 return true;
             case R.id.about://点击关于
                 Toast.makeText(getContext(), "关于", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.add://点击添加
+                Toast.makeText(getContext(), "添加", Toast.LENGTH_LONG).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -199,6 +206,12 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
     @NotNull
     private ArrayList<Vocabulary> getAllVocabulary() {
         return VocabularyFactory.getInstance(getContext()).getAllVocabulary();
+    }
+
+    @NotNull
+    private ArrayList<Vocabulary> getOnePage() {
+        return VocabularyFactory.getInstance(getContext()).getOnePage(page++);
+
     }
 
     @Override

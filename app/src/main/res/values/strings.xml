@@ -6,6 +6,7 @@
 
     <string name="sort">排序</string>
     <string name="about">关于</string>
+    <string name="add">添加</string>
 
     <string name="search">搜索</string>
 </resources>

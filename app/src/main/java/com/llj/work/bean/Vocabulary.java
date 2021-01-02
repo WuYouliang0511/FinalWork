@@ -1,9 +1,12 @@
 package com.llj.work.bean;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.jetbrains.annotations.NotNull;
 
-public class Vocabulary {
+public class Vocabulary implements Parcelable {
 
     private Integer id;//单词的id
     private String lemma;//单词的引用
@@ -16,6 +19,45 @@ public class Vocabulary {
 
     public Vocabulary() {
     }
+
+    protected Vocabulary(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readInt();
+        }
+        lemma = in.readString();
+        lemma_mark = in.readString();
+        senses_senior = in.readString();
+        phonetic = in.readString();
+        if (in.readByte() == 0) {
+            degree = null;
+        } else {
+            degree = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            collect = null;
+        } else {
+            collect = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            have_audio = null;
+        } else {
+            have_audio = in.readInt();
+        }
+    }
+
+    public static final Creator<Vocabulary> CREATOR = new Creator<Vocabulary>() {
+        @Override
+        public Vocabulary createFromParcel(Parcel in) {
+            return new Vocabulary(in);
+        }
+
+        @Override
+        public Vocabulary[] newArray(int size) {
+            return new Vocabulary[size];
+        }
+    };
 
     public Integer getId() {
         return id;
@@ -94,5 +136,42 @@ public class Vocabulary {
                 ",collect=" + collect +
                 ", have_audio=" + have_audio +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(id);
+        }
+        dest.writeString(lemma);
+        dest.writeString(lemma_mark);
+        dest.writeString(senses_senior);
+        dest.writeString(phonetic);
+        if (degree == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(degree);
+        }
+        if (collect == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(collect);
+        }
+        if (have_audio == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(have_audio);
+        }
     }
 }
