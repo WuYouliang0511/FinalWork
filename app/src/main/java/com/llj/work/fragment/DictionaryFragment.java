@@ -2,6 +2,7 @@ package com.llj.work.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.llj.work.R;
+import com.llj.work.activity.AboutActivity;
 import com.llj.work.adapter.VocabularyListAdapter;
 import com.llj.work.bean.Vocabulary;
 import com.llj.work.database.VocabularyFactory;
@@ -41,6 +43,7 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
     private EditText search;
     private ArrayList<Vocabulary> vocabularies;
     private int page;
+    private boolean order = true;
     private VocabularyListAdapter adapter;
 
     @Override
@@ -189,11 +192,16 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort://点击排序
+                order = !order;
                 Toast.makeText(getContext(), "排序", Toast.LENGTH_LONG).show();
-                adapter.order();
+                vocabularies = VocabularyFactory.getInstance(getContext()).sort(page, order);
+                adapter.resetData(vocabularies);
                 return true;
             case R.id.about://点击关于
                 Toast.makeText(getContext(), "关于", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                intent.setClass(getContext(), AboutActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.add://点击添加
                 Toast.makeText(getContext(), "添加", Toast.LENGTH_LONG).show();
@@ -210,8 +218,7 @@ public class DictionaryFragment extends Fragment implements VocabularyListAdapte
 
     @NotNull
     private ArrayList<Vocabulary> getOnePage() {
-        return VocabularyFactory.getInstance(getContext()).getOnePage(page++);
-
+        return VocabularyFactory.getInstance(getContext()).getOnePage(page++, order);
     }
 
     @Override

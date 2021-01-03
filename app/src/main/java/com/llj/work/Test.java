@@ -2,33 +2,36 @@ package com.llj.work;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @Author: Wu Youliang
- * @CreateDate: 2020/12/31 下午5:13
- * @Company LotoGram
- */
+import java.util.Random;
+
 public class Test {
 
     public static void main(String[] args) {
-        int[] a = findIndex("0123456789", "4567");
+        System.out.println(getRandomStr());
     }
 
 
-    private static int[] findIndex(@NotNull String str1, @NotNull String str2) {
-        int length1 = str1.length();
-        int length2 = str2.length();
-        int[] index = new int[]{0, 0};
-
-        for (int i = 0; i < length1 - length2 + 1; i++) {
-            System.out.println(str1.substring(i, i + length2));
-            if (str1.substring(i, i + length2).equals(str2)) {
-                System.out.println(i + "   " + (i + length2));
+    @NotNull
+    private static String getRandomStr() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            int number = random.nextInt(3);
+            long result;
+            switch (number) {
+                case 0:
+                    result = Math.round(Math.random() * 25 + 65);
+                    sb.append((char) result);
+                    break;
+                case 1:
+                    result = Math.round(Math.random() * 25 + 97);
+                    sb.append((char) result);
+                    break;
+                case 2:
+                    sb.append(new Random().nextInt(10));
+                    break;
             }
         }
-
-
-        return new int[]{1, 1};
-
-
+        return sb.toString();
     }
 }

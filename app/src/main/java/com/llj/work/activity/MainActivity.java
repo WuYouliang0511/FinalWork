@@ -58,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.navigation_dictionary:
                 viewPager.setCurrentItem(0, true);
-                Toast.makeText(MainActivity.this, "dictionary", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "dictionary", Toast.LENGTH_LONG).show();
                 break;
             case R.id.navigation_workbook:
                 viewPager.setCurrentItem(1, true);
-                Toast.makeText(MainActivity.this, "workbook", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "workbook", Toast.LENGTH_LONG).show();
                 break;
         }
         return true;

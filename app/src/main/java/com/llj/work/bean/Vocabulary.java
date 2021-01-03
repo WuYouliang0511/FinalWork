@@ -13,6 +13,7 @@ public class Vocabulary implements Parcelable {
     private String lemma_mark;//单词的音节
     private String senses_senior;//单词的释义
     private String phonetic;//发音
+    private String lastModify;
     private Integer degree;//难度
     private Integer collect;//是否收藏  1：收藏  0：未收藏
     private Integer have_audio;//是否有语音 1：有  0：没有
@@ -30,6 +31,7 @@ public class Vocabulary implements Parcelable {
         lemma_mark = in.readString();
         senses_senior = in.readString();
         phonetic = in.readString();
+        lastModify = in.readString();
         if (in.readByte() == 0) {
             degree = null;
         } else {
@@ -45,6 +47,60 @@ public class Vocabulary implements Parcelable {
         } else {
             have_audio = in.readInt();
         }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(id);
+        }
+        dest.writeString(lemma);
+        dest.writeString(lemma_mark);
+        dest.writeString(senses_senior);
+        dest.writeString(phonetic);
+        dest.writeString(lastModify);
+        if (degree == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(degree);
+        }
+        if (collect == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(collect);
+        }
+        if (have_audio == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(have_audio);
+        }
+    }
+
+    @Override
+    @NotNull
+    public String toString() {
+        return "Vocabulary{" +
+                "id=" + id +
+                ", lemma='" + lemma + '\'' +
+                ", lemma_mark='" + lemma_mark + '\'' +
+                ", senses_senior='" + senses_senior + '\'' +
+                ", phonetic='" + phonetic + '\'' +
+                ", lastModify='" + lastModify + '\'' +
+                ", degree=" + degree +
+                ", collect=" + collect +
+                ", have_audio=" + have_audio +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Vocabulary> CREATOR = new Creator<Vocabulary>() {
@@ -99,20 +155,20 @@ public class Vocabulary implements Parcelable {
         this.phonetic = phonetic;
     }
 
+    public String getLastModify() {
+        return lastModify;
+    }
+
+    public void setLastModify(String lastModify) {
+        this.lastModify = lastModify;
+    }
+
     public Integer getDegree() {
         return degree;
     }
 
     public void setDegree(Integer degree) {
         this.degree = degree;
-    }
-
-    public Integer getHave_audio() {
-        return have_audio;
-    }
-
-    public void setHave_audio(Integer have_audio) {
-        this.have_audio = have_audio;
     }
 
     public Integer getCollect() {
@@ -123,55 +179,15 @@ public class Vocabulary implements Parcelable {
         this.collect = collect;
     }
 
-    @Override
-    @NotNull
-    public String toString() {
-        return "Vocabulary{" +
-                "id=" + id +
-                ", lemma='" + lemma + '\'' +
-                ", lemma_mark='" + lemma_mark + '\'' +
-                ", senses_senior='" + senses_senior + '\'' +
-                ", phonetic='" + phonetic + '\'' +
-                ", degree=" + degree +
-                ",collect=" + collect +
-                ", have_audio=" + have_audio +
-                '}';
+    public Integer getHave_audio() {
+        return have_audio;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setHave_audio(Integer have_audio) {
+        this.have_audio = have_audio;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        if (id == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(id);
-        }
-        dest.writeString(lemma);
-        dest.writeString(lemma_mark);
-        dest.writeString(senses_senior);
-        dest.writeString(phonetic);
-        if (degree == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(degree);
-        }
-        if (collect == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(collect);
-        }
-        if (have_audio == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(have_audio);
-        }
+    public static Creator<Vocabulary> getCREATOR() {
+        return CREATOR;
     }
 }

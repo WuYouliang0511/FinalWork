@@ -9,6 +9,8 @@ import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     public static final String TAG = "DatabaseOpenHelper";
@@ -57,6 +59,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                 "lemma_mark varchar(60) DEFAULT '' NOT NULL," +
                 "senses_senior varchar(40) DEFAULT '' NOT NULL," +
                 "phonetic varchar(40) DEFAULT '' NOT NULL," +
+                "last_modify varchar(16) DEFAULT '' NOT NULL," +
                 "degree INTEGER DEFAULT 0," +
                 "collect INTEGER DEFAULT 0," +
                 "have_audio INTEGER DEFAULT 0)";
@@ -64,9 +67,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         Log.d(TAG, "数据库创建成功");
 
         for (int i = 0; i < 1000; i++) {
-            String sql1 = "INSERT INTO vocabulary VALUES(NULL,'Success" + i + "','音节" + i + "','解释" + i + "','发音',1,0,1)";
+            String sql1 = "INSERT INTO vocabulary VALUES(NULL,'" + (getRandomStr()) + "','音节" + i + "','解释" + i + "','发音','1970-01-01 00:00'," + (new Random().nextInt(9) + 1) + ",0,"+new Random().nextInt(2)+")";
             database.execSQL(sql1);
-            Log.d(TAG, "插入数据成功");
+            Log.d(TAG, "插入数据成功:" + sql1);
         }
     }
 
@@ -76,5 +79,29 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     private void updateFrom2To3(@NotNull SQLiteDatabase database) {
 
+    }
+
+    @NotNull
+    private static String getRandomStr() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            int number = random.nextInt(2);
+            long result;
+            switch (number) {
+                case 0:
+                    result = Math.round(Math.random() * 25 + 65);
+                    sb.append((char) result);
+                    break;
+                case 1:
+                    result = Math.round(Math.random() * 25 + 97);
+                    sb.append((char) result);
+                    break;
+                case 2:
+                    sb.append(new Random().nextInt(10));
+                    break;
+            }
+        }
+        return sb.toString().toLowerCase();
     }
 }
